@@ -1,6 +1,6 @@
-package br.com.alura.med.voll.alura_medVoll_api.infra.security;
+package com.alura.Desafio_Forum.infra.security;
 
-import br.com.alura.med.voll.alura_medVoll_api.models.Usuario;
+import com.alura.Desafio_Forum.domain.User;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public class TokenService {
 
     @Value("${api.security.token.secret}")
     private String secret;
-    public String gerarToken(Usuario usuario){
+    public String gerarToken(User usuario){
         try {
             var algoritmo = Algorithm.HMAC256(secret);
             return JWT.create()

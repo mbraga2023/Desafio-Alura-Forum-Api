@@ -1,4 +1,4 @@
-package br.com.alura.med.voll.alura_medVoll_api.infra.security.springDoc;
+package com.alura.Desafio_Forum.infra.security.springDoc;
 
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;

@@ -1,4 +1,4 @@
-package br.com.alura.med.voll.alura_medVoll_api.infra;
+package com.alura.Desafio_Forum.infra;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -57,7 +57,7 @@ public class Exceptions {
         }
     }
 
-    @ExceptionHandler(ValidacaoException.class)
+    @ExceptionHandler()
     public ResponseEntity tratarErroRegraDeNegocio(ValidacaoException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }

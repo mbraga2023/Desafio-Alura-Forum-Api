@@ -1,6 +1,6 @@
-package br.com.alura.med.voll.alura_medVoll_api.infra.security;
+package com.alura.Desafio_Forum.infra.security;
 
-import br.com.alura.med.voll.alura_medVoll_api.repository.UsuarioRepository;
+import com.alura.Desafio_Forum.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     private TokenService tokenService;
 
     @Autowired
-    private UsuarioRepository repository;
+    private UserRepository repository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

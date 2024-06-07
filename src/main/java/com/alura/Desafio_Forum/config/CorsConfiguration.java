@@ -1,4 +1,4 @@
-package br.com.alura.med.voll.alura_medVoll_api.config;
+package com.alura.Desafio_Forum.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
