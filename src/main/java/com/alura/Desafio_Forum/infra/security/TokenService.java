@@ -1,6 +1,6 @@
 package com.alura.Desafio_Forum.infra.security;
 
-import com.alura.Desafio_Forum.domain.User;
+import com.alura.Desafio_Forum.domain.Usuario;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +20,12 @@ public class TokenService {
 
     @Value("${api.security.token.secret}")
     private String secret;
-    public String gerarToken(User usuario){
+    public String gerarToken(Usuario usuario){
         try {
             var algoritmo = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer("API Voll Med")
-                    .withSubject(usuario.getLogin())
+                    .withSubject(usuario.getUsername())
                    // .withClaim("id", usuario.getId())
                     .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);

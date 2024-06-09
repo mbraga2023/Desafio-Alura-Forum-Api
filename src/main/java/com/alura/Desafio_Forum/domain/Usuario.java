@@ -6,32 +6,36 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-@Entity(name = "Users")
-@Table(name= "users")
+@Entity(name = "Usuario")
+@Table(name= "usuario")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of ="id")
-public class User implements UserDetails {
-
+public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String login;
+    private String nome;
+    private String email;
     private String senha;
     private boolean status;
 
-    public boolean isStatus() {
-        return status;
-    }
+    @ManyToMany
+    @JoinTable(name = "usuario_perfil",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "perfil_id"))
+    private Set<Perfil> perfis = new HashSet<>();
 
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
+    @OneToMany(mappedBy = "autor")
+    private List<Topico> topicos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "autor")
+    private List<Resposta> respostas = new ArrayList<>();
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -45,7 +49,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override
@@ -68,3 +72,4 @@ public class User implements UserDetails {
         return true;
     }
 }
+

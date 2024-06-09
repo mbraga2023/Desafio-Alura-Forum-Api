@@ -1,10 +1,9 @@
 package com.alura.Desafio_Forum.controller;
 
-import com.alura.Desafio_Forum.domain.User;
-import com.alura.Desafio_Forum.dto.UserDTO;
-import com.alura.Desafio_Forum.dto.UserIdLoginDTO;
-import com.alura.Desafio_Forum.repository.UserRepository;
-import com.alura.Desafio_Forum.service.UserService;
+import com.alura.Desafio_Forum.dto.UsuarioDTO;
+import com.alura.Desafio_Forum.dto.UsuarioIdEmailDto;
+import com.alura.Desafio_Forum.repository.UsuarioRepository;
+import com.alura.Desafio_Forum.service.UsuarioService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,23 +19,23 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/usuario")
 @SecurityRequirement(name = "bearer-key")
-public class UserController {
+public class UsuarioController {
 
     @Autowired
-    private UserRepository repository;
+    private UsuarioRepository repository;
 
     @Autowired
-    private UserService userService;
+    private UsuarioService usuarioService;
 
     @PostMapping("")
     @Transactional
-    public ResponseEntity<String> cadastrarUsuario(@RequestBody @Valid UserDTO userDTO,
+    public ResponseEntity<String> cadastrarUsuario(@RequestBody @Valid UsuarioDTO userDTO,
                                                    UriComponentsBuilder uriComponentsBuilder) {
         try {
-            Long userId = userService.saveUser(userDTO);
-            var uri = uriComponentsBuilder.path("/user/{id}")
+            Long userId = usuarioService.saveUser(userDTO);
+            var uri = uriComponentsBuilder.path("/usuario/{id}")
                     .buildAndExpand(userId).toUri();
             return ResponseEntity.created(uri)
                     .body("User registered successfully with ID: " + userId);
@@ -51,16 +50,16 @@ public class UserController {
             }
 
     @GetMapping("")
-    public ResponseEntity<Page<UserIdLoginDTO>> listar(Pageable pageable) {
-        Page<UserIdLoginDTO> usersPage = userService.getAllUsers(pageable);
+    public ResponseEntity<Page<UsuarioIdEmailDto>> listar(Pageable pageable) {
+        Page<UsuarioIdEmailDto> usersPage = usuarioService.getAllUsers(pageable);
         return ResponseEntity.ok(usersPage);
     }
 
 
     @PutMapping("/{userId}")
-    public ResponseEntity<String> atualizarUsuario(@PathVariable Long userId, @RequestBody UserIdLoginDTO detalhamentoUserDto) {
+    public ResponseEntity<String> atualizarUsuario(@PathVariable Long userId, @RequestBody UsuarioIdEmailDto usuarioInfo) {
         try {
-            userService.updateUser(userId, detalhamentoUserDto);
+            usuarioService.updateUser(userId, usuarioInfo);
             return ResponseEntity.ok("User updated successfully.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -74,7 +73,7 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
         try {
-            userService.deleteUser(userId);
+            usuarioService.deleteUser(userId);
             return ResponseEntity.noContent().build();
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -82,7 +81,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete user.");
         }
     }
-
+/*
     @GetMapping("/{id}")
     public ResponseEntity<UserIdLoginDTO> detalhar(@PathVariable Long id) {
         // Retrieve user by ID
@@ -101,7 +100,7 @@ public class UserController {
 
         return ResponseEntity.ok(detalhamentoUserDto);
     }
-
+*/
 
 
 }
