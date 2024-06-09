@@ -1,4 +1,4 @@
-package com.alura.Desafio_Forum.dto;
+package com.alura.Desafio_Forum.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

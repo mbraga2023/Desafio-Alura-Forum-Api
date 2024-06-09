@@ -1,7 +1,9 @@
 package com.alura.Desafio_Forum.controller;
 
-import com.alura.Desafio_Forum.dto.UsuarioDTO;
-import com.alura.Desafio_Forum.dto.UsuarioIdEmailDto;
+import com.alura.Desafio_Forum.domain.Usuario;
+import com.alura.Desafio_Forum.dto.request.UsuarioDTO;
+import com.alura.Desafio_Forum.dto.response.UsuarioDetalhamentoDto;
+import com.alura.Desafio_Forum.dto.response.UsuarioIdEmailDto;
 import com.alura.Desafio_Forum.repository.UsuarioRepository;
 import com.alura.Desafio_Forum.service.UsuarioService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -57,7 +59,9 @@ public class UsuarioController {
 
 
     @PutMapping("/{userId}")
-    public ResponseEntity<String> atualizarUsuario(@PathVariable Long userId, @RequestBody UsuarioIdEmailDto usuarioInfo) {
+    public ResponseEntity<String> atualizarUsuario(
+            @PathVariable Long userId,
+            @RequestBody UsuarioIdEmailDto usuarioInfo) {
         try {
             usuarioService.updateUser(userId, usuarioInfo);
             return ResponseEntity.ok("User updated successfully.");
@@ -81,26 +85,27 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete user.");
         }
     }
-/*
+
     @GetMapping("/{id}")
-    public ResponseEntity<UserIdLoginDTO> detalhar(@PathVariable Long id) {
+    public ResponseEntity<UsuarioDetalhamentoDto> detalhar(@PathVariable Long id) {
         // Retrieve user by ID
-        Optional<User> optionalUser = repository.findById(id);
+        Optional<Usuario> optionalUser = repository.findById(id);
         if (optionalUser.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         // Map user to DetalhamentoUserDto
-        User user = optionalUser.get();
-        UserIdLoginDTO detalhamentoUserDto = new UserIdLoginDTO(
+        Usuario user = optionalUser.get();
+        UsuarioDetalhamentoDto detalhamentoUserDto = new UsuarioDetalhamentoDto(
                 user.getId(),
-                user.getLogin(),
+                user.getNome(),
+                user.getEmail(),
                 user.isStatus()
         );
 
         return ResponseEntity.ok(detalhamentoUserDto);
     }
-*/
+
 
 
 }

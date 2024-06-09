@@ -1,8 +1,8 @@
 package com.alura.Desafio_Forum.service;
 
 import com.alura.Desafio_Forum.domain.Usuario;
-import com.alura.Desafio_Forum.dto.UsuarioDTO;
-import com.alura.Desafio_Forum.dto.UsuarioIdEmailDto;
+import com.alura.Desafio_Forum.dto.request.UsuarioDTO;
+import com.alura.Desafio_Forum.dto.response.UsuarioIdEmailDto;
 import com.alura.Desafio_Forum.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +96,14 @@ public class UsuarioService {
 
         // Save the updated user
         usuarioRepository.save(existingUser);
+    }
+
+    public Usuario findByEmail(String email) {
+        Usuario usuario = (Usuario) usuarioRepository.findByEmail(email);
+        if (usuario == null) {
+            throw new IllegalArgumentException("User not found with email: " + email);
+        }
+        return usuario;
     }
 }
 
