@@ -22,4 +22,10 @@ public class Curso {
     @OneToMany(mappedBy = "curso")
     private List<Topico> topicos = new ArrayList<>();
 
+    public Curso(Long id, String nome, String categoria) {
+        this.id = id;
+        this.nome = nome;
+        this.categoria = categoria;
+    }
+
 }

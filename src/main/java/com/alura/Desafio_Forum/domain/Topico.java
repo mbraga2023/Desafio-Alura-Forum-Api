@@ -20,7 +20,7 @@ public class Topico {
     private Long id;
     private String titulo;
     private String mensagem;
-    private LocalDateTime dataCriacao;
+    private LocalDateTime data_criacao;
     private boolean status;
 
     @ManyToOne

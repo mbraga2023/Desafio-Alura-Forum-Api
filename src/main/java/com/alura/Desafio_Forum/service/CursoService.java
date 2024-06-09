@@ -1,10 +1,8 @@
 package com.alura.Desafio_Forum.service;
 
 import com.alura.Desafio_Forum.domain.Curso;
-import com.alura.Desafio_Forum.domain.Usuario;
 import com.alura.Desafio_Forum.dto.request.CursoDto;
 import com.alura.Desafio_Forum.dto.response.CursoIdDto;
-import com.alura.Desafio_Forum.dto.response.UsuarioIdEmailDto;
 import com.alura.Desafio_Forum.repository.CursoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

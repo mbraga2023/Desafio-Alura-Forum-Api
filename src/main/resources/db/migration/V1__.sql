@@ -31,7 +31,7 @@ CREATE TABLE Topico (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
     mensagem TEXT NOT NULL,
-    dataCriacao TIMESTAMP,
+    data_criacao TIMESTAMP,
     status BOOLEAN NOT NULL,
     autor_id BIGINT,
     curso_id BIGINT,
@@ -42,7 +42,7 @@ CREATE TABLE Topico (
 CREATE TABLE Resposta (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     mensagem TEXT NOT NULL,
-    dataCriacao TIMESTAMP,
+    data_criacao TIMESTAMP,
     solucao BOOLEAN NOT NULL,
     autor_id BIGINT,
     topico_id BIGINT,

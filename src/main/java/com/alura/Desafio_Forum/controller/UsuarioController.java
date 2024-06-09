@@ -1,9 +1,9 @@
 package com.alura.Desafio_Forum.controller;
 
 import com.alura.Desafio_Forum.domain.Usuario;
-import com.alura.Desafio_Forum.dto.request.UsuarioDTO;
+import com.alura.Desafio_Forum.dto.request.UsuarioDto;
 import com.alura.Desafio_Forum.dto.response.UsuarioDetalhamentoDto;
-import com.alura.Desafio_Forum.dto.response.UsuarioIdEmailDto;
+import com.alura.Desafio_Forum.dto.response.UsuarioIdDto;
 import com.alura.Desafio_Forum.repository.UsuarioRepository;
 import com.alura.Desafio_Forum.service.UsuarioService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -33,7 +33,7 @@ public class UsuarioController {
 
     @PostMapping("")
     @Transactional
-    public ResponseEntity<String> cadastrarUsuario(@RequestBody @Valid UsuarioDTO userDTO,
+    public ResponseEntity<String> cadastrarUsuario(@RequestBody @Valid UsuarioDto userDTO,
                                                    UriComponentsBuilder uriComponentsBuilder) {
         try {
             Long userId = usuarioService.saveUser(userDTO);
@@ -52,8 +52,8 @@ public class UsuarioController {
             }
 
     @GetMapping("")
-    public ResponseEntity<Page<UsuarioIdEmailDto>> listar(Pageable pageable) {
-        Page<UsuarioIdEmailDto> usersPage = usuarioService.getAllUsers(pageable);
+    public ResponseEntity<Page<UsuarioIdDto>> listar(Pageable pageable) {
+        Page<UsuarioIdDto> usersPage = usuarioService.getAllUsers(pageable);
         return ResponseEntity.ok(usersPage);
     }
 
@@ -61,7 +61,7 @@ public class UsuarioController {
     @PutMapping("/{userId}")
     public ResponseEntity<String> atualizarUsuario(
             @PathVariable Long userId,
-            @RequestBody UsuarioIdEmailDto usuarioInfo) {
+            @RequestBody UsuarioIdDto usuarioInfo) {
         try {
             usuarioService.updateUser(userId, usuarioInfo);
             return ResponseEntity.ok("User updated successfully.");

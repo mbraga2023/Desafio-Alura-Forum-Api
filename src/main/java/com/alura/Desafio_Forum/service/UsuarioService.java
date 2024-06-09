@@ -1,8 +1,8 @@
 package com.alura.Desafio_Forum.service;
 
 import com.alura.Desafio_Forum.domain.Usuario;
-import com.alura.Desafio_Forum.dto.request.UsuarioDTO;
-import com.alura.Desafio_Forum.dto.response.UsuarioIdEmailDto;
+import com.alura.Desafio_Forum.dto.request.UsuarioDto;
+import com.alura.Desafio_Forum.dto.response.UsuarioIdDto;
 import com.alura.Desafio_Forum.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Long saveUser(UsuarioDTO userDTO) {
+    public Long saveUser(UsuarioDto userDTO) {
         // Validate DTO fields
         if (userDTO.email() == null || userDTO.senha() == null) {
             throw new IllegalArgumentException("Login and senha fields are required.");
@@ -52,13 +52,13 @@ public class UsuarioService {
         return savedUser.getId();
     }
 
-    public Page<UsuarioIdEmailDto> getAllUsers(Pageable pageable) {
+    public Page<UsuarioIdDto> getAllUsers(Pageable pageable) {
         Page<Usuario> usersPage = usuarioRepository.findAll(pageable);
-        return usersPage.map(user -> new UsuarioIdEmailDto(user.getId(), user.getNome(), user.getEmail(), user.isStatus()));
+        return usersPage.map(user -> new UsuarioIdDto(user.getId(), user.getNome(), user.getEmail(), user.isStatus()));
     }
 
     @Transactional
-    public void updateUser(Long userId, UsuarioIdEmailDto detalhamentoUserDto) {
+    public void updateUser(Long userId, UsuarioIdDto detalhamentoUserDto) {
         // Check if user exists
         Optional<Usuario> optionalUser = usuarioRepository.findById(userId);
         if (optionalUser.isEmpty()) {

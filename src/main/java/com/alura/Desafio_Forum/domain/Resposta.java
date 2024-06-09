@@ -17,7 +17,7 @@ public class Resposta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String mensagem;
-    private LocalDateTime dataCriacao;
+    private LocalDateTime data_criacao;
     private boolean solucao;
 
     @ManyToOne
