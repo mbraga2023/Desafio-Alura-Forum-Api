@@ -1,6 +1,8 @@
 package com.alura.Desafio_Forum.controller;
 
+import com.alura.Desafio_Forum.domain.Topico;
 import com.alura.Desafio_Forum.dto.request.TopicoDto;
+import com.alura.Desafio_Forum.dto.response.CursoIdDto;
 import com.alura.Desafio_Forum.dto.response.TopicoDetalhamentoDto;
 import com.alura.Desafio_Forum.dto.response.UsuarioIdDto;
 import com.alura.Desafio_Forum.repository.TopicoRepository;
@@ -17,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/topicos")
@@ -55,6 +59,36 @@ public class TopicoController {
         return ResponseEntity.ok(topicosPage);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity detalhar(@PathVariable Long id){
+        Optional<Topico> optionalTopico = repository.findById(id);
+
+        if (((Optional<?>) optionalTopico).isPresent()) {
+            Topico topico = optionalTopico.get();
+            TopicoDetalhamentoDto detalhamentoDto = new TopicoDetalhamentoDto(
+                    topico.getId(),
+                    topico.getTitulo(),
+                    topico.getMensagem(),
+                    new UsuarioIdDto(topico.getAutor().getId(), topico.getAutor().getNome(), topico.getAutor().getEmail()),
+                    new CursoIdDto(topico.getCurso().getId(), topico.getCurso().getNome(), topico.getCurso().getCategoria()),
+                    topico.isStatus()
+            );
+
+            return ResponseEntity.ok(detalhamentoDto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{topicoId}")
+    public ResponseEntity<String> atualizarUsuario(
+            @PathVariable Long topicoId,
+            @RequestBody TopicoDetalhamentoDto topicoInfo) {
+
+        service.updateUser(topicoId, topicoInfo);
+        return ResponseEntity.ok("Tópico atualizado com sucesso.");
+
+    }
 
 
 

@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class TopicoService {
@@ -93,11 +94,27 @@ public class TopicoService {
                 topico.getTitulo(),
                 topico.getMensagem(),
                 new UsuarioIdDto(topico.getAutor().getId(), topico.getAutor().getNome(), topico.getAutor().getEmail()),
-                new CursoIdDto(topico.getCurso().getId(), topico.getCurso().getNome(), topico.getCurso().getCategoria())
+                new CursoIdDto(topico.getCurso().getId(), topico.getCurso().getNome(), topico.getCurso().getCategoria()),
+                topico.isStatus()
         ));
     }
 
 
+    public void updateUser(Long topicoId, TopicoDetalhamentoDto topicoInfo) {
+        Optional<Topico> optionalTopico = repository.findById(topicoId);
+        if (optionalTopico.isEmpty()) {
+            throw new IllegalStateException("Tópico não encontrado");
+        }
 
+        Topico existingTopico = optionalTopico.get();
 
+        existingTopico.setTitulo(topicoInfo.titulo());
+        existingTopico.setMensagem(topicoInfo.mensagem());
+
+        try {
+            repository.save(existingTopico);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException("Título ou mensagem não podem ser nulos", e);
+        }
+    }
 }

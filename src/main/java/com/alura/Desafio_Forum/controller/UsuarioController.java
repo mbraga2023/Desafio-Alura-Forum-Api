@@ -55,7 +55,7 @@ public class UsuarioController {
             @RequestBody UsuarioIdDto usuarioInfo) {
 
             usuarioService.updateUser(userId, usuarioInfo);
-            return ResponseEntity.ok("User updated successfully.");
+            return ResponseEntity.ok("Usuário atualizado com sucesso.");
 
     }
 

@@ -60,9 +60,11 @@ public class UsuarioService {
     @Transactional
     public void updateUser(Long userId, UsuarioIdDto detalhamentoUserDto) {
         // Check if user exists
-        Optional<Usuario> optionalUser = usuarioRepository.findById(userId);
+        Optional<Usuario> optionalUser = usuarioRepository
+                .findById(userId);
         if (optionalUser.isEmpty()) {
-            throw new IllegalStateException("User not found with ID: " + userId);
+            throw new IllegalStateException(
+                    "Usuário não encontrado");
         }
 
         // Get the existing user

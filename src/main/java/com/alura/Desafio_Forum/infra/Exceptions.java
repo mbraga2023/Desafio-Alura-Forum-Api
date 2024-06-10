@@ -2,6 +2,7 @@ package com.alura.Desafio_Forum.infra;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.UnexpectedTypeException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -75,6 +76,11 @@ public class Exceptions {
     @ExceptionHandler(UnexpectedTypeException.class)
     public ResponseEntity handleUnexpectedTypeException(UnexpectedTypeException ex) {
         String errorMessage = "Invalid input format. ";
+        return ResponseEntity.badRequest().body(errorMessage);
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        String errorMessage = "Data integrity violation: " + ex.getLocalizedMessage();
         return ResponseEntity.badRequest().body(errorMessage);
     }
 }
