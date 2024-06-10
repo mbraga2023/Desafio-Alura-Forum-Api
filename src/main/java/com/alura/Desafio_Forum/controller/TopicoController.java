@@ -1,23 +1,25 @@
 package com.alura.Desafio_Forum.controller;
 
 import com.alura.Desafio_Forum.dto.request.TopicoDto;
+import com.alura.Desafio_Forum.dto.response.TopicoDetalhamentoDto;
+import com.alura.Desafio_Forum.dto.response.UsuarioIdDto;
 import com.alura.Desafio_Forum.repository.TopicoRepository;
 import com.alura.Desafio_Forum.service.TopicoService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping("/topico")
+@RequestMapping("/topicos")
 @SecurityRequirement(name = "bearer-key")
 public class TopicoController {
 
@@ -37,9 +39,24 @@ public class TopicoController {
             var uri = uriComponentsBuilder.path("/topico/{id}")
                     .buildAndExpand(topicoId).toUri();
             return ResponseEntity.created(uri)
-                    .body("Tópico registered successfully with ID: " + topicoId);
+                    .body("Tópico registrado com sucesso. Id: " + topicoId);
 
     }
+
+    @GetMapping("")
+    public ResponseEntity<Page<TopicoDetalhamentoDto>> listar(
+            @RequestParam(required = false) String cursoNome,
+            @RequestParam(required = false) Integer ano,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<TopicoDetalhamentoDto> topicosPage = service.getAllTopicosOrderByDataCriacao(pageable, cursoNome, ano);
+        return ResponseEntity.ok(topicosPage);
+    }
+
+
+
 
 }
 

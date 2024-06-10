@@ -4,10 +4,15 @@ import com.alura.Desafio_Forum.domain.Curso;
 import com.alura.Desafio_Forum.domain.Topico;
 import com.alura.Desafio_Forum.domain.Usuario;
 import com.alura.Desafio_Forum.dto.request.TopicoDto;
+import com.alura.Desafio_Forum.dto.response.CursoIdDto;
+import com.alura.Desafio_Forum.dto.response.TopicoDetalhamentoDto;
+import com.alura.Desafio_Forum.dto.response.UsuarioIdDto;
 import com.alura.Desafio_Forum.repository.TopicoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -32,16 +37,6 @@ public class TopicoService {
             throw new IllegalArgumentException("Título, Mensagem e Autor são obrigatórios.");
         }
 
-        // Check if titulo already exists
-        if (repository.existsByTitulo(topicoDto.titulo())) {
-            throw new IllegalArgumentException("Título já existe.");
-        }
-
-        // Check if mensagem already exists
-        if (repository.existsByMensagem(topicoDto.mensagem())) {
-            throw new IllegalArgumentException("Mensagem já existe.");
-        }
-
         // Retrieve the currently authenticated user
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String loggedUserEmail = userDetails.getUsername();
@@ -53,6 +48,11 @@ public class TopicoService {
         String providedEmail = topicoDto.autor().email();
         if (!loggedUserEmail.equals(providedEmail)) {
             throw new IllegalArgumentException("O email fornecido não é válido.");
+        }
+
+        // Check if titulo, mensagem, and cursoId combination already exists
+        if (repository.existsByTituloAndMensagemAndCursoId(topicoDto.titulo(), topicoDto.mensagem(), topicoDto.curso().id())) {
+            throw new IllegalArgumentException("Combinação de Título, Mensagem e Curso já existe.");
         }
 
         Topico topico = new Topico();
@@ -67,8 +67,8 @@ public class TopicoService {
             throw new IllegalArgumentException("O ID do Curso não é válido");
         }
 
-            topico.setCurso(new Curso(topicoDto.curso().id(), topicoDto.curso().nome(),
-                    topicoDto.curso().categoria()));
+        topico.setCurso(new Curso(topicoDto.curso().id(), topicoDto.curso().nome(),
+                topicoDto.curso().categoria()));
 
         // Set the current date and time
         topico.setData_criacao(LocalDateTime.now());
@@ -77,5 +77,27 @@ public class TopicoService {
         Topico savedTopico = repository.save(topico);
         return savedTopico.getId();
     }
+
+
+    public Page<TopicoDetalhamentoDto> getAllTopicosOrderByDataCriacao(Pageable pageable, String cursoNome, Integer ano) {
+        Page<Topico> topicosPage;
+
+        if (cursoNome != null && ano != null) {
+            topicosPage = repository.findByCursoNomeAndAno(cursoNome, ano, pageable);
+        } else {
+            topicosPage = repository.findAllByOrderByDataCriacaoAsc(pageable);
+        }
+
+        return topicosPage.map(topico -> new TopicoDetalhamentoDto(
+                topico.getId(),
+                topico.getTitulo(),
+                topico.getMensagem(),
+                new UsuarioIdDto(topico.getAutor().getId(), topico.getAutor().getNome(), topico.getAutor().getEmail()),
+                new CursoIdDto(topico.getCurso().getId(), topico.getCurso().getNome(), topico.getCurso().getCategoria())
+        ));
+    }
+
+
+
 
 }

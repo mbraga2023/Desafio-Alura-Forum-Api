@@ -1,6 +1,7 @@
 package com.alura.Desafio_Forum.infra;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.UnexpectedTypeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -68,6 +69,12 @@ public class Exceptions {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        return ResponseEntity.badRequest().body("Invalid JSON format: ");
+        return ResponseEntity.badRequest().body("Invalid JSON format. ");
+    }
+
+    @ExceptionHandler(UnexpectedTypeException.class)
+    public ResponseEntity handleUnexpectedTypeException(UnexpectedTypeException ex) {
+        String errorMessage = "Invalid input format. ";
+        return ResponseEntity.badRequest().body(errorMessage);
     }
 }

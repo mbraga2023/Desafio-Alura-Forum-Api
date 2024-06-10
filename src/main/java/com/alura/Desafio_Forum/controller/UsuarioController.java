@@ -35,21 +35,12 @@ public class UsuarioController {
     @Transactional
     public ResponseEntity<String> cadastrarUsuario(@RequestBody @Valid UsuarioDto userDTO,
                                                    UriComponentsBuilder uriComponentsBuilder) {
-        try {
-            Long userId = usuarioService.saveUser(userDTO);
+                    Long userId = usuarioService.saveUser(userDTO);
             var uri = uriComponentsBuilder.path("/usuario/{id}")
                     .buildAndExpand(userId).toUri();
             return ResponseEntity.created(uri)
-                    .body("User registered successfully with ID: " + userId);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user.");
-        }
-
-            }
+                    .body("Usuário registrado com sucesso. Id: " + userId);
+                    }
 
     @GetMapping("")
     public ResponseEntity<Page<UsuarioIdDto>> listar(Pageable pageable) {
@@ -62,28 +53,18 @@ public class UsuarioController {
     public ResponseEntity<String> atualizarUsuario(
             @PathVariable Long userId,
             @RequestBody UsuarioIdDto usuarioInfo) {
-        try {
+
             usuarioService.updateUser(userId, usuarioInfo);
             return ResponseEntity.ok("User updated successfully.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user.");
-        }
+
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
-        try {
+
             usuarioService.deleteUser(userId);
             return ResponseEntity.noContent().build();
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete user.");
-        }
+
     }
 
     @GetMapping("/{id}")
