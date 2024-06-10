@@ -58,4 +58,7 @@ public class CursoService {
         repository.save(existingCurso);
     }
 
+    public boolean existsById(Long cursoId) {
+        return repository.existsById(cursoId);
+    }
 }

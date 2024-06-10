@@ -26,10 +26,10 @@ public class Exceptions {
         return ResponseEntity.badRequest().body(erros.stream().map(DadosErroValidacao::new).toList());
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
+    /*@ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity tratarErro400(HttpMessageNotReadableException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
-    }
+    }*/
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity tratarErroBadCredentials() {
@@ -60,5 +60,14 @@ public class Exceptions {
     @ExceptionHandler()
     public ResponseEntity tratarErroRegraDeNegocio(ValidacaoException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        return ResponseEntity.badRequest().body("Invalid JSON format: ");
     }
 }
