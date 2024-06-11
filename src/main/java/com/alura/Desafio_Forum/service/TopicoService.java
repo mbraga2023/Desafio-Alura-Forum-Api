@@ -9,6 +9,7 @@ import com.alura.Desafio_Forum.dto.response.TopicoDetalhamentoDto;
 import com.alura.Desafio_Forum.dto.response.TopicosListAtivosDto;
 import com.alura.Desafio_Forum.dto.response.UsuarioIdDto;
 import com.alura.Desafio_Forum.repository.TopicoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -146,5 +147,9 @@ public class TopicoService {
                 new UsuarioIdDto(topico.getAutor().getId(), topico.getAutor().getNome(), topico.getAutor().getEmail()),
                 new CursoIdDto(topico.getCurso().getId(), topico.getCurso().getNome(), topico.getCurso().getCategoria())
         ));
+    }
+    public Topico findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Tópico não encontrado"));
     }
 }

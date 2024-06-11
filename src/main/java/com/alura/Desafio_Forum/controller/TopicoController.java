@@ -1,12 +1,15 @@
 package com.alura.Desafio_Forum.controller;
 
 import com.alura.Desafio_Forum.domain.Topico;
+import com.alura.Desafio_Forum.domain.Usuario;
+import com.alura.Desafio_Forum.dto.request.RespostaDto;
 import com.alura.Desafio_Forum.dto.request.TopicoDto;
 import com.alura.Desafio_Forum.dto.response.CursoIdDto;
 import com.alura.Desafio_Forum.dto.response.TopicoDetalhamentoDto;
 import com.alura.Desafio_Forum.dto.response.TopicosListAtivosDto;
 import com.alura.Desafio_Forum.dto.response.UsuarioIdDto;
 import com.alura.Desafio_Forum.repository.TopicoRepository;
+import com.alura.Desafio_Forum.service.RespostaService;
 import com.alura.Desafio_Forum.service.TopicoService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -19,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
@@ -31,6 +36,9 @@ public class TopicoController {
 
     @Autowired
     private TopicoService service;
+
+    @Autowired
+    private RespostaService respostaService;
 
     @PostMapping("")
     @Transactional
@@ -114,6 +122,17 @@ public class TopicoController {
     public ResponseEntity excluir(@PathVariable Long id){
         service.inactivateTopico(id); // Call the method to inactivate the topic
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/resposta/{topicId}")
+    public ResponseEntity<?> salvarResposta(
+            @PathVariable Long topicId,
+            @RequestBody RespostaDto respostaDto,
+            Principal principal) {
+        Usuario autor = respostaService.findByEmail(principal.getName()); // Assuming principal is the logged-in user
+        LocalDateTime dataCriacao = LocalDateTime.now();
+        respostaService.saveResposta(topicId, respostaDto, autor, dataCriacao);
+        return ResponseEntity.ok().build();
     }
 
 
