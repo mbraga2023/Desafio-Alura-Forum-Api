@@ -4,17 +4,16 @@ import com.alura.Desafio_Forum.domain.Topico;
 import com.alura.Desafio_Forum.dto.request.TopicoDto;
 import com.alura.Desafio_Forum.dto.response.CursoIdDto;
 import com.alura.Desafio_Forum.dto.response.TopicoDetalhamentoDto;
+import com.alura.Desafio_Forum.dto.response.TopicosListAtivosDto;
 import com.alura.Desafio_Forum.dto.response.UsuarioIdDto;
 import com.alura.Desafio_Forum.repository.TopicoRepository;
 import com.alura.Desafio_Forum.service.TopicoService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +47,19 @@ public class TopicoController {
     }
 
     @GetMapping("")
-    public ResponseEntity<Page<TopicoDetalhamentoDto>> listar(
+    public ResponseEntity<Page<TopicosListAtivosDto>> listarTopicosAtivos(
+            @RequestParam(required = false) String cursoNome,
+            @RequestParam(required = false) Integer ano,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<TopicosListAtivosDto> topicosPage = service.getAllTopicosAtivos(pageable, cursoNome, ano);
+        return ResponseEntity.ok(topicosPage);
+    }
+
+    @GetMapping("listaAdmin")
+    public ResponseEntity<Page<TopicoDetalhamentoDto>> listarTodos(
             @RequestParam(required = false) String cursoNome,
             @RequestParam(required = false) Integer ano,
             @RequestParam(defaultValue = "0") int page,

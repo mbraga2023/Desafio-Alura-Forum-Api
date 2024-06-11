@@ -6,6 +6,7 @@ import com.alura.Desafio_Forum.domain.Usuario;
 import com.alura.Desafio_Forum.dto.request.TopicoDto;
 import com.alura.Desafio_Forum.dto.response.CursoIdDto;
 import com.alura.Desafio_Forum.dto.response.TopicoDetalhamentoDto;
+import com.alura.Desafio_Forum.dto.response.TopicosListAtivosDto;
 import com.alura.Desafio_Forum.dto.response.UsuarioIdDto;
 import com.alura.Desafio_Forum.repository.TopicoRepository;
 import jakarta.transaction.Transactional;
@@ -129,5 +130,21 @@ public class TopicoService {
 
         // Save the updated topic
         repository.save(topic);
+    }
+
+
+    public Page<TopicosListAtivosDto> getAllTopicosAtivos(Pageable pageable, String cursoNome, Integer ano) {
+        Page<Topico> topicosPage;
+
+        // Only filter by status true
+        topicosPage = repository.findByStatusTrue(pageable);
+
+        return topicosPage.map(topico -> new TopicosListAtivosDto(
+                topico.getId(),
+                topico.getTitulo(),
+                topico.getMensagem(),
+                new UsuarioIdDto(topico.getAutor().getId(), topico.getAutor().getNome(), topico.getAutor().getEmail()),
+                new CursoIdDto(topico.getCurso().getId(), topico.getCurso().getNome(), topico.getCurso().getCategoria())
+        ));
     }
 }
