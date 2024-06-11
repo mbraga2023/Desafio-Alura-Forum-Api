@@ -90,6 +90,21 @@ public class TopicoController {
 
     }
 
+    /*    EXCLUSÃO FÍSICA
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void excluir(@PathVariable Long id){
+    medicoRepository.deleteById(id);
+    }*/
+
+    //exclusão lógica
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity excluir(@PathVariable Long id){
+        service.inactivateTopico(id); // Call the method to inactivate the topic
+        return ResponseEntity.noContent().build();
+    }
+
 
 
 }

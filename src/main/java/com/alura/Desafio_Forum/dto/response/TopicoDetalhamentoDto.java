@@ -16,7 +16,7 @@ public record TopicoDetalhamentoDto (
         this.mensagem = mensagem;
         this.autor = autor;
         this.curso = curso;
-        this.status = true;
+        this.status = status;
     }
 
 }

@@ -117,4 +117,17 @@ public class TopicoService {
             throw new IllegalArgumentException("Título ou mensagem não podem ser nulos", e);
         }
     }
+
+    @Transactional
+    public void inactivateTopico(Long id) {
+        // Find the topic by its ID
+        Topico topic = repository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Tópico não encontrado"));
+
+        // Set the status to false
+        topic.setStatus(false);
+
+        // Save the updated topic
+        repository.save(topic);
+    }
 }
