@@ -28,6 +28,6 @@ public class SpringDocConfig {
                                 .email("michel.diener@gmail.com"))
                         .license(new License()
                                 .name("Apache 2.0")
-                                .url("http://voll.med/api/licenca")));
+                                .url("https://github.com/mbraga2023/Desafio-Alura-Forum-Api/blob/master/LICENSE")));
     }
 }
