@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -37,17 +38,24 @@ public class TopicoController {
     private RespostaService respostaService;
 
     @PostMapping("")
-    @Transactional
     public ResponseEntity<String> cadastrarTopico(
             @RequestBody @Valid TopicoDto topicoDto,
-            UriComponentsBuilder uriComponentsBuilder) {
+            UriComponentsBuilder uriComponentsBuilder,
+            Authentication authentication) {
 
-            Long topicoId = service.saveTopico(topicoDto);
-            var uri = uriComponentsBuilder.path("/topicos/{id}")
-                    .buildAndExpand(topicoId).toUri();
-            return ResponseEntity.created(uri)
-                    .body("Tópico registrado com sucesso. Id: " + topicoId);
+        // Get the logged-in user's email
+        String loggedUserEmail = authentication.getName();
 
+        // Save the topico using the service method with the logged-in user's email
+        Long topicoId = service.saveTopico(topicoDto, loggedUserEmail);
+
+        // Build the URI for the newly created resource
+        var uri = uriComponentsBuilder.path("/topicos/{id}")
+                .buildAndExpand(topicoId).toUri();
+
+        // Return the response with the URI of the newly created resource
+        return ResponseEntity.created(uri)
+                .body("Tópico registrado com sucesso. Id: " + topicoId);
     }
 
     @GetMapping("/lista")

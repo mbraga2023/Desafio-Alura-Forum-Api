@@ -83,4 +83,11 @@ public class Exceptions {
         String errorMessage = "Data integrity violation: " + ex.getLocalizedMessage();
         return ResponseEntity.badRequest().body(errorMessage);
     }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity NullPointerException(NullPointerException ex) {
+        String errorMessage = "Erro";
+        return ResponseEntity.badRequest().body(errorMessage);
+    }
+
 }

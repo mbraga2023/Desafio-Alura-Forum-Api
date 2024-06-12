@@ -34,52 +34,37 @@ public class TopicoService {
     private CursoService cursoService;
 
     @Transactional
-    public Long saveTopico(TopicoDto topicoDto) {
-        if (topicoDto.titulo() == null || topicoDto.mensagem() == null || topicoDto.autor() == null) {
-            throw new IllegalArgumentException("Título, Mensagem e Autor são obrigatórios.");
+    public Long saveTopico(TopicoDto topicoDto, String loggedUserEmail) {
+        if (topicoDto.titulo() == null || topicoDto.mensagem() == null) {
+            throw new IllegalArgumentException("Título e Mensagem são obrigatórios.");
         }
-
-        // Retrieve the currently authenticated user
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String loggedUserEmail = userDetails.getUsername();
 
         // Find the logged-in user
         Usuario loggedUser = usuarioService.findByEmail(loggedUserEmail);
-
-        // Check if the provided email matches the logged-in user's email
-        String providedEmail = topicoDto.autor().email();
-        if (!loggedUserEmail.equals(providedEmail)) {
-            throw new IllegalArgumentException("O email fornecido não é válido.");
-        }
 
         // Check if titulo, mensagem, and cursoId combination already exists
         if (repository.existsByTituloAndMensagemAndCursoId(topicoDto.titulo(), topicoDto.mensagem(), topicoDto.curso().id())) {
             throw new IllegalArgumentException("Combinação de Título, Mensagem e Curso já existe.");
         }
 
-        Topico topico = new Topico();
-        topico.setTitulo(topicoDto.titulo());
-        topico.setMensagem(topicoDto.mensagem());
-        topico.setAutor(loggedUser);
-
-        Long cursoId = topicoDto.curso().id();
-
         // Check if cursoId is valid (non-null and exists)
+        Long cursoId = topicoDto.curso().id();
         if (cursoId == null || !cursoService.existsById(cursoId)) {
             throw new IllegalArgumentException("O ID do Curso não é válido");
         }
 
-        topico.setCurso(new Curso(topicoDto.curso().id(), topicoDto.curso().nome(),
-                topicoDto.curso().categoria()));
-
-        // Set the current date and time
+        // Create and save the Topico entity
+        Topico topico = new Topico();
+        topico.setTitulo(topicoDto.titulo());
+        topico.setMensagem(topicoDto.mensagem());
+        topico.setAutor(loggedUser);
+        topico.setCurso(new Curso(cursoId, topicoDto.curso().nome(), topicoDto.curso().categoria()));
         topico.setData_criacao(LocalDateTime.now());
-
         topico.setStatus(true);
+
         Topico savedTopico = repository.save(topico);
         return savedTopico.getId();
     }
-
 
     public Page<TopicoListDto> getAllTopicosOrderByDataCriacao(Pageable pageable, String cursoNome, Integer ano) {
         Page<Topico> topicosPage;
