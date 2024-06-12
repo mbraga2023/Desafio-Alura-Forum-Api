@@ -2,6 +2,7 @@ package com.alura.Desafio_Forum.service;
 
 import com.alura.Desafio_Forum.domain.Usuario;
 import com.alura.Desafio_Forum.dto.request.UsuarioDto;
+import com.alura.Desafio_Forum.dto.response.UsuarioDetalhamentoDto;
 import com.alura.Desafio_Forum.dto.response.UsuarioIdDto;
 import com.alura.Desafio_Forum.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
@@ -106,6 +107,21 @@ public class UsuarioService {
             throw new IllegalArgumentException("User not found with email: " + email);
         }
         return usuario;
+    }
+
+    public Optional<UsuarioDetalhamentoDto> detalharUsuario(Long id) {
+        Optional<Usuario> optionalUser = usuarioRepository.findById(id)
+                .filter(Usuario::isStatus);
+        return optionalUser.map(this::mapToDetalhamentoDto);
+    }
+
+    private UsuarioDetalhamentoDto mapToDetalhamentoDto(Usuario user) {
+        return new UsuarioDetalhamentoDto(
+                user.getId(),
+                user.getNome(),
+                user.getEmail(),
+                user.isStatus()
+        );
     }
 }
 

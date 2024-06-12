@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +23,6 @@ import java.util.Optional;
 @RequestMapping("/usuario")
 @SecurityRequirement(name = "bearer-key")
 public class UsuarioController {
-
-    @Autowired
-    private UsuarioRepository repository;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -43,7 +39,7 @@ public class UsuarioController {
                     }
 
     @GetMapping("")
-    public ResponseEntity<Page<UsuarioIdDto>> listar(Pageable pageable) {
+    public ResponseEntity<Page<UsuarioIdDto>> listarUsuarios(Pageable pageable) {
         Page<UsuarioIdDto> usersPage = usuarioService.getAllUsers(pageable);
         return ResponseEntity.ok(usersPage);
     }
@@ -60,7 +56,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<String> deleteUsuarios(@PathVariable Long userId) {
 
             usuarioService.deleteUser(userId);
             return ResponseEntity.noContent().build();
@@ -68,25 +64,12 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioDetalhamentoDto> detalhar(@PathVariable Long id) {
-        // Retrieve user by ID
-        Optional<Usuario> optionalUser = repository.findById(id);
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<UsuarioDetalhamentoDto> detalharUsuario(@PathVariable Long id) {
+        Optional<UsuarioDetalhamentoDto> detalheOptional = usuarioService.detalharUsuario(id);
 
-        // Map user to DetalhamentoUserDto
-        Usuario user = optionalUser.get();
-        UsuarioDetalhamentoDto detalhamentoUserDto = new UsuarioDetalhamentoDto(
-                user.getId(),
-                user.getNome(),
-                user.getEmail(),
-                user.isStatus()
-        );
-
-        return ResponseEntity.ok(detalhamentoUserDto);
+        return detalheOptional
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
-
-
 
 }

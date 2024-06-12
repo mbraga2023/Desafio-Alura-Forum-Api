@@ -1,13 +1,11 @@
 package com.alura.Desafio_Forum.controller;
 
-import com.alura.Desafio_Forum.domain.Topico;
 import com.alura.Desafio_Forum.domain.Usuario;
 import com.alura.Desafio_Forum.dto.request.RespostaDto;
 import com.alura.Desafio_Forum.dto.request.TopicoDto;
-import com.alura.Desafio_Forum.dto.response.CursoIdDto;
 import com.alura.Desafio_Forum.dto.response.TopicoDetalhamentoDto;
+import com.alura.Desafio_Forum.dto.response.TopicoListDto;
 import com.alura.Desafio_Forum.dto.response.TopicosListAtivosDto;
-import com.alura.Desafio_Forum.dto.response.UsuarioIdDto;
 import com.alura.Desafio_Forum.repository.TopicoRepository;
 import com.alura.Desafio_Forum.service.RespostaService;
 import com.alura.Desafio_Forum.service.TopicoService;
@@ -31,8 +29,6 @@ import java.util.Optional;
 @SecurityRequirement(name = "bearer-key")
 public class TopicoController {
 
-    @Autowired
-    private TopicoRepository repository;
 
     @Autowired
     private TopicoService service;
@@ -47,14 +43,14 @@ public class TopicoController {
             UriComponentsBuilder uriComponentsBuilder) {
 
             Long topicoId = service.saveTopico(topicoDto);
-            var uri = uriComponentsBuilder.path("/topico/{id}")
+            var uri = uriComponentsBuilder.path("/topicos/{id}")
                     .buildAndExpand(topicoId).toUri();
             return ResponseEntity.created(uri)
                     .body("Tópico registrado com sucesso. Id: " + topicoId);
 
     }
 
-    @GetMapping("")
+    @GetMapping("/lista")
     public ResponseEntity<Page<TopicosListAtivosDto>> listarTopicosAtivos(
             @RequestParam(required = false) String cursoNome,
             @RequestParam(required = false) Integer ano,
@@ -67,40 +63,29 @@ public class TopicoController {
     }
 
     @GetMapping("listaAdmin")
-    public ResponseEntity<Page<TopicoDetalhamentoDto>> listarTodos(
+    public ResponseEntity<Page<TopicoListDto>> listarTodosTopicos(
             @RequestParam(required = false) String cursoNome,
             @RequestParam(required = false) Integer ano,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<TopicoDetalhamentoDto> topicosPage = service.getAllTopicosOrderByDataCriacao(pageable, cursoNome, ano);
+        Page<TopicoListDto> topicosPage = service.getAllTopicosOrderByDataCriacao(pageable, cursoNome, ano);
         return ResponseEntity.ok(topicosPage);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity detalhar(@PathVariable Long id){
-        Optional<Topico> optionalTopico = repository.findById(id);
+    public ResponseEntity detalharTopico(@PathVariable Long id){
+        Optional<TopicoDetalhamentoDto> detalheOptional = service.detalharTopico(id);
 
-        if (((Optional<?>) optionalTopico).isPresent()) {
-            Topico topico = optionalTopico.get();
-            TopicoDetalhamentoDto detalhamentoDto = new TopicoDetalhamentoDto(
-                    topico.getId(),
-                    topico.getTitulo(),
-                    topico.getMensagem(),
-                    new UsuarioIdDto(topico.getAutor().getId(), topico.getAutor().getNome(), topico.getAutor().getEmail()),
-                    new CursoIdDto(topico.getCurso().getId(), topico.getCurso().getNome(), topico.getCurso().getCategoria()),
-                    topico.isStatus()
-            );
-
-            return ResponseEntity.ok(detalhamentoDto);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return detalheOptional
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
+
     @PutMapping("/{topicoId}")
-    public ResponseEntity<String> atualizarUsuario(
+    public ResponseEntity<String> atualizarTopico(
             @PathVariable Long topicoId,
             @RequestBody TopicoDetalhamentoDto topicoInfo) {
 
@@ -119,7 +104,7 @@ public class TopicoController {
     //exclusão lógica
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity excluir(@PathVariable Long id){
+    public ResponseEntity excluirTopico(@PathVariable Long id){
         service.inactivateTopico(id); // Call the method to inactivate the topic
         return ResponseEntity.noContent().build();
     }
@@ -129,13 +114,11 @@ public class TopicoController {
             @PathVariable Long topicId,
             @RequestBody RespostaDto respostaDto,
             Principal principal) {
-        Usuario autor = respostaService.findByEmail(principal.getName()); // Assuming principal is the logged-in user
+        Usuario autor = respostaService.findByEmail(principal.getName());
         LocalDateTime dataCriacao = LocalDateTime.now();
         respostaService.saveResposta(topicId, respostaDto, autor, dataCriacao);
         return ResponseEntity.ok().build();
     }
-
-
 
 }
 

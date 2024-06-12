@@ -4,10 +4,7 @@ import com.alura.Desafio_Forum.domain.Curso;
 import com.alura.Desafio_Forum.domain.Topico;
 import com.alura.Desafio_Forum.domain.Usuario;
 import com.alura.Desafio_Forum.dto.request.TopicoDto;
-import com.alura.Desafio_Forum.dto.response.CursoIdDto;
-import com.alura.Desafio_Forum.dto.response.TopicoDetalhamentoDto;
-import com.alura.Desafio_Forum.dto.response.TopicosListAtivosDto;
-import com.alura.Desafio_Forum.dto.response.UsuarioIdDto;
+import com.alura.Desafio_Forum.dto.response.*;
 import com.alura.Desafio_Forum.repository.TopicoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -20,7 +17,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TopicoService {
@@ -82,7 +81,7 @@ public class TopicoService {
     }
 
 
-    public Page<TopicoDetalhamentoDto> getAllTopicosOrderByDataCriacao(Pageable pageable, String cursoNome, Integer ano) {
+    public Page<TopicoListDto> getAllTopicosOrderByDataCriacao(Pageable pageable, String cursoNome, Integer ano) {
         Page<Topico> topicosPage;
 
         if (cursoNome != null && ano != null) {
@@ -91,7 +90,7 @@ public class TopicoService {
             topicosPage = repository.findAllByOrderByDataCriacaoAsc(pageable);
         }
 
-        return topicosPage.map(topico -> new TopicoDetalhamentoDto(
+        return topicosPage.map(topico -> new TopicoListDto(
                 topico.getId(),
                 topico.getTitulo(),
                 topico.getMensagem(),
@@ -151,5 +150,33 @@ public class TopicoService {
     public Topico findById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Tópico não encontrado"));
+    }
+
+    public Optional<TopicoDetalhamentoDto> detalharTopico(Long id) {
+        Optional<Topico> optionalTopico = repository.findByIdAndStatusTrue(id);
+        return optionalTopico.map(this::mapToDetalhamentoDto);
+    }
+
+    private TopicoDetalhamentoDto mapToDetalhamentoDto(Topico topico) {
+        List<RespostaIdDto> respostasDto = topico.getRespostas().stream()
+                .map(resposta -> new RespostaIdDto(
+                        resposta.getId(),
+                        resposta.getMensagem(),
+                        resposta.getData_criacao(),
+                        resposta.isSolucao(),
+                        resposta.getAutor().getId(),
+                        resposta.getTopico().getId()
+                ))
+                .collect(Collectors.toList());
+
+        return new TopicoDetalhamentoDto(
+                topico.getId(),
+                topico.getTitulo(),
+                topico.getMensagem(),
+                new UsuarioIdDto(topico.getAutor().getId(), topico.getAutor().getNome(), topico.getAutor().getEmail()),
+                new CursoIdDto(topico.getCurso().getId(), topico.getCurso().getNome(), topico.getCurso().getCategoria()),
+                respostasDto,
+                topico.isStatus()
+        );
     }
 }

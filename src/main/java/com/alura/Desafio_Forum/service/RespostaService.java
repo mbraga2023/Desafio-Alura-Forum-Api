@@ -34,8 +34,15 @@ public class RespostaService {
         // Retrieve the associated Topico
         Topico topico = topicoService.findById(topicId);
 
-        // Save the Resposta
-        Resposta resposta = respostaDto.toEntity(autor, topico, dataCriacao);
-        respostaRepository.save(resposta);
+        // Check if the topic's status is true
+        if (topico.isStatus()) {
+            // Save the Resposta
+            Resposta resposta = respostaDto.toEntity(autor, topico, dataCriacao);
+            respostaRepository.save(resposta);
+        } else {
+            // Handle the case where the topic's status is false (optional)
+            throw new IllegalArgumentException("Tópico inativo. Resposta não foi salva");
+        }
     }
+
 }

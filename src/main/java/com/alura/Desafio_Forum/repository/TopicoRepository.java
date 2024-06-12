@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface TopicoRepository extends JpaRepository<Topico, Long> {
     boolean existsByTitulo(String titulo);
@@ -23,4 +25,5 @@ public interface TopicoRepository extends JpaRepository<Topico, Long> {
 
     Page<Topico> findByStatusTrue(Pageable pageable);
 
+    Optional<Topico> findByIdAndStatusTrue(Long id);
 }
