@@ -9,6 +9,10 @@ Este aplicativo Java Spring 3 simula um fórum de mensagens onde os usuários po
 - **Postagem de Respostas**: Os usuários podem responder a tópicos existentes.
 - **Segurança**: Utiliza o Spring Security para autenticação e autorização baseada em token JWT.
 
+## Diagrama Banco de Dados
+![Diagrama Banco de Dados](src/main/resources/uml-db.png)
+
+
 ## Documentação
 - **Swagger UI**: A documentação da API está disponível em [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html).
 - **Coleção do Postman**: Você pode encontrar a coleção do Postman para testar a API no arquivo [Forum API.postman_collection.json](Forum%20API.postman_collection.json).
@@ -18,7 +22,7 @@ Siga estas etapas para configurar e executar o aplicativo localmente:
 
 1. **Clonar o Repositório**: Clone este repositório para a sua máquina local.
    ```
-   git clone <[url_do_repositório](https://github.com/mbraga2023/Desafio-Alura-Forum-Api)>
+   git clone <url_do_repositório>
    ```
 
 2. **Configuração do Banco de Dados**: Configure um banco de dados MySQL e defina os detalhes de conexão nas propriedades do aplicativo.
