@@ -40,6 +40,58 @@ Siga estas etapas para configurar e executar o aplicativo localmente:
 - Spring Security
 - Autenticação de Token JWT
 
+## Rotas
+
+A seguir as rotas importantes para iniciar o projeto.
+
+**Lista de Rotas**
+
+![Diagrama Banco de Dados](src/main/resources/postman-1.png)
+
+**Cadastrar Usuário**
+
+  ![Diagrama Banco de Dados](src/main/resources/postman-2.png)
+
+Importante notar que o formato do Login é sempre o email do usuário.
+
+**Login**
+
+![Diagrama Banco de Dados](src/main/resources/postman-3.png)
+
+O token retornado, se o usuário for válido, é usado para autenticar todas as outras rotas (use Bearer Token).
+
+
+**Cadastrar Curso**
+
+![Diagrama Banco de Dados](src/main/resources/postman-4.png)
+
+**Cadastrar Tópico**
+
+![Diagrama Banco de Dados](src/main/resources/postman-5.png)
+
+Não é necessário enviar o "usuário" no json. O sistema busca as informações do usuário logado (informados pelo token).
+
+**Cadastrar Resposta**
+
+![Diagrama Banco de Dados](src/main/resources/postman-6.png)
+
+A identificação do tópico (topico_id) é informada ao final da URI.
+
+**Outras rotas**
+   ```
+Listar usuários (GET) - /usuario
+Update usuário (PUT) - /usuario/{idUsuario}
+Delete usuário (DELETE) - /usuario/{idUsuario}
+Listar cursos (GET) - /curso
+Update cusos (PUT) - /curso/{idCurso}
+Listar tópicos ativos (GET) - /topicos/lista
+Listar todos os tópicos (GET) - /topicos/listaAdmin
+Update tópico (PUT) - /topicos/{idTopico}
+Delete tópico (DELETE) - /topicos/{idTopico}
+Detalhamento tópico (GET) - /topicos/{idTopico}
+   ```
+
+
 ## Contribuidores
 - Michel Diener Braga
 - [michel.diener@gmail.com]
