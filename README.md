@@ -22,7 +22,7 @@ Siga estas etapas para configurar e executar o aplicativo localmente:
 
 1. **Clonar o Repositório**: Clone este repositório para a sua máquina local.
    ```
-   git clone <url_do_repositório>
+   git clone git@github.com:mbraga2023/Desafio-Alura-Forum-Api.git
    ```
 
 2. **Configuração do Banco de Dados**: Configure um banco de dados MySQL e defina os detalhes de conexão nas propriedades do aplicativo.
