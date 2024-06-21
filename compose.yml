@@ -12,6 +12,11 @@ services:
       JWT_SECRET: my-secret-key
     depends_on:
       - mysql
+    develop:
+      watch:
+        - path: ./src
+          action: sync
+          target: /usr/local/app/src
 
   mysql:
     image: mysql:8.0
